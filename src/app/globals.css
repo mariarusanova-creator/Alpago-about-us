@@ -1,0 +1,563 @@
+@import "tailwindcss";
+@source not "../../.next";
+@source not "../../.next.nosync";
+@source not "../../.next.dev.nosync";
+
+:root {
+  /* warm near-black bronze palette pulled from the Alpago homepage direction */
+  --bg: #0a0806;
+  --bg-2: #100d09;
+  --bg-3: #17120c;
+  --ink: #ece3d5;
+  --ink-dim: rgba(236, 227, 213, 0.58);
+  --ink-strong: rgba(236, 227, 213, 0.8);
+  --ink-faint: rgba(236, 227, 213, 0.34);
+  --bronze: #b98a4e;
+  --bronze-lo: #8a6a3e;
+  --bronze-hi: #e2c08a;
+  --error: #d18472;
+  /* gradient stops for the gold display headlines */
+  --gold-1: #e8c78f;
+  --gold-2: #cca05c;
+  --gold-3: #a67c40;
+  --line: rgba(236, 227, 213, 0.12);
+  --line-strong: rgba(236, 227, 213, 0.22);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-ink: var(--ink);
+  --color-bronze: var(--bronze);
+  --font-display: var(--font-basel);
+  --font-sans: var(--font-basel);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+html {
+  background: #150d07;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  /* warm bronze gradient background (from shared Figma style) — fixed to viewport */
+  background: radial-gradient(
+    88% 64% at 50% 0%,
+    #5e3f27 0%,
+    #4a3320 26%,
+    #381e10 58%,
+    #1d130b 82%,
+    #150d07 100%
+  );
+  background-attachment: fixed;
+  color: var(--ink);
+  font-family: var(--font-basel), system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+::selection {
+  background: var(--bronze);
+  color: #0a0806;
+}
+
+/* film grain overlay for a cinematic surface */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.055;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.display {
+  font-family: var(--font-basel), Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.05;
+}
+
+/* opaque, page-matched background for pinned sections so an incoming section
+   fully occludes the outgoing one during scroll hand-offs (no overlap). The
+   gradient is identical to the body + fixed to the viewport, so it stays seamless. */
+.section-bg {
+  background: radial-gradient(
+    88% 64% at 50% 0%,
+    #5e3f27 0%,
+    #4a3320 26%,
+    #381e10 58%,
+    #1d130b 82%,
+    #150d07 100%
+  );
+  background-attachment: fixed;
+}
+
+.caption {
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bronze);
+  font-weight: 400;
+}
+
+/* char-split spans for the scroll-blur typography effect */
+.split-char {
+  display: inline-block;
+  white-space: pre;
+  will-change: filter, opacity;
+}
+
+/* gold display headlines built from BlurText (per-char gradient clip) */
+.gold-head .split-char {
+  background-image: linear-gradient(180deg, var(--gold-1) 0%, var(--gold-2) 48%, var(--gold-3) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease);
+}
+.link-underline:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* Named easing utilities avoid repeating long arbitrary Tailwind values and
+   keep motion timing consistent across drawers, cards and controls. */
+.ease-alpago { transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+.ease-alpago-panel { transition-timing-function: cubic-bezier(0.76, 0, 0.24, 1); }
+.ease-alpago-soft { transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1); }
+
+.contact-detail-link::after {
+  opacity: 0.5;
+}
+
+.contact-direction {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.contact-direction:hover,
+.contact-direction:focus-visible {
+  border-color: #876540;
+  background: #876540;
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}
+
+/* audit mode: collapse full-height sections so the whole page fits one tall
+   viewport and can be captured in a single no-scroll paint */
+body.audit .h-screen {
+  height: 520px !important;
+}
+body.audit .min-h-screen {
+  min-height: 520px !important;
+}
+body.audit .min-h-\[92vh\] {
+  min-height: 460px !important;
+}
+body.audit .h-\[78vh\] {
+  height: 360px !important;
+}
+body.audit .min-h-\[60vh\] {
+  min-height: 320px !important;
+}
+body.audit .py-\[16vh\],
+body.audit .py-\[18vh\],
+body.audit .py-\[20vh\] {
+  padding-top: 56px !important;
+  padding-bottom: 56px !important;
+}
+body.audit .mt-\[14vh\],
+body.audit .mt-\[10vh\] {
+  margin-top: 40px !important;
+}
+body.audit .pt-\[16vh\] {
+  padding-top: 56px !important;
+}
+/* force reveal states so audit doesn't wait on scroll triggers */
+body.audit .split-char,
+body.audit .ov-char,
+body.audit .ov-word,
+body.audit .cv-char,
+body.audit .cv-word,
+body.audit .b2-char,
+body.audit .b2-word,
+body.audit .usp-word {
+  filter: none !important;
+  opacity: 1 !important;
+}
+body.audit .reveal-el {
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+/* visit-website badge — rotating label, hover speeds it up + arrow nudges */
+@keyframes vs-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.vs-spin {
+  animation: vs-spin 16s linear infinite;
+  transform-origin: 50% 50%;
+}
+.vs-badge:hover .vs-spin {
+  animation-duration: 5s;
+}
+.vs-arrow {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.vs-badge:hover .vs-arrow {
+  transform: translate(2px, -2px) scale(1.15);
+}
+.vs-badge:hover .vs-core {
+  border-color: var(--bronze-hi);
+}
+
+/* fullscreen menu overlay — always uses the light cream treatment */
+.nav-overlay {
+  --ink: #332a2a;
+  --ink-dim: #332a2a;
+  --ink-faint: rgba(51, 42, 42, 0.36);
+  --bronze: #8a6a3e;
+  --bronze-hi: #7d5c2f;
+  --line-strong: rgba(51, 42, 42, 0.26);
+  --btn-ink: #e8e4d9;
+  color: var(--ink);
+  background: radial-gradient(90% 70% at 50% -10%, #ebe7dd 0%, #e6e2d6 28%, #ded9cc 58%, #cfc9bb 100%);
+}
+
+/* awards marquee — seamless horizontal loop, pauses on hover */
+@keyframes marquee-x {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-x 40s linear infinite;
+  width: max-content;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* side page-nav: reveal labels on hover */
+.pn-item:hover span:first-child {
+  opacity: 1 !important;
+}
+
+/* breadcrumb — the section name fades up when it changes */
+@keyframes bc-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.bc-enter {
+  animation: bc-in 0.5s var(--ease) both;
+}
+
+/* ============ Alpago Cream theme (?theme=light) ============ */
+body.light {
+  --bg: #e0dcd1;
+  --bg-2: #d8d3c6;
+  --bg-3: #cfc9bb;
+  --ink: #332a2a;
+  --ink-dim: #332a2a;
+  --ink-strong: #332a2a;
+  --ink-faint: rgba(51, 42, 42, 0.36);
+  --bronze: #8a6a3e;
+  --bronze-lo: #6f5330;
+  --bronze-hi: #7d5c2f;
+  --error: #a14e3f;
+  /* display headlines: flat brown on cream (no gradient) */
+  --gold-1: #8a6a3e;
+  --gold-2: #8a6a3e;
+  --gold-3: #8a6a3e;
+  --line: rgba(51, 42, 42, 0.14);
+  --line-strong: rgba(51, 42, 42, 0.26);
+  --btn-ink: #e8e4d9;
+  background: radial-gradient(
+    88% 64% at 50% 0%,
+    #ebe7dd 0%,
+    #e6e2d6 26%,
+    #e0dcd1 58%,
+    #d7d2c5 82%,
+    #cfc9bb 100%
+  );
+  background-attachment: fixed;
+  /* the gradient is a background-IMAGE (leaves background-color transparent); pair it
+     with a solid cream color + light color-scheme so any area exposed behind a fixed/
+     pinned layer (e.g. the hero's mask wipe) shows cream, never the dark canvas. */
+  background-color: #e6e2d6;
+  color-scheme: light;
+  color: var(--ink);
+}
+
+.alpago-dark-button {
+  background: var(--ink);
+  color: var(--btn-ink, #1c150e);
+}
+
+.alpago-dark-button:hover,
+.apply-card:hover .alpago-dark-button {
+  background: #876540;
+  color: #f1eadf;
+  box-shadow: 0 12px 28px rgba(42, 28, 18, 0.18);
+}
+
+.insights-carousel-track {
+  transform: translateX(calc(var(--insights-slide, 0) * -100%));
+}
+
+@media (min-width: 768px) {
+  .insights-carousel-track {
+    transform: translateX(calc(var(--insights-slide, 0) * -33.333333%));
+  }
+
+}
+
+.alpago-field {
+  border-color: var(--field-border, var(--line));
+  transition: border-color 300ms ease, background-color 300ms ease;
+}
+
+.alpago-field:hover,
+.alpago-field:focus,
+.alpago-field:focus-within {
+  border-color: var(--bronze-hi);
+}
+
+.alpago-field:is(input, textarea):not(:placeholder-shown) {
+  border-color: #876540;
+}
+
+.alpago-field[aria-invalid="true"],
+.alpago-field:has([aria-invalid="true"]) {
+  border-color: var(--error);
+}
+
+.alpago-select-menu {
+  border-color: var(--line-strong);
+  background: color-mix(in srgb, var(--bg) 94%, white 6%);
+  color: var(--ink);
+  box-shadow: 0 18px 44px rgba(29, 19, 11, 0.2);
+  backdrop-filter: blur(18px);
+}
+
+.alpago-select-option {
+  color: var(--ink);
+}
+
+.alpago-select-option:hover,
+.alpago-select-option:focus-visible,
+.alpago-select-option[aria-selected="true"] {
+  background: #876540;
+  color: #f1eadf;
+}
+
+.alpago-select-option:disabled {
+  background: transparent;
+  color: var(--ink-faint);
+}
+
+form input[type="checkbox"] {
+  display: inline-grid;
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  appearance: none;
+  place-content: center;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: #f1eadf;
+  cursor: pointer;
+  transition: border-color 300ms ease, background-color 300ms ease;
+}
+
+form input[type="checkbox"]::before {
+  width: 0.62rem;
+  height: 0.38rem;
+  content: "";
+  transform: rotate(-45deg) scale(0);
+  transform-origin: center;
+  border-bottom: 1.5px solid currentColor;
+  border-left: 1.5px solid currentColor;
+  transition: transform 220ms var(--ease);
+}
+
+form input[type="checkbox"]:hover,
+form input[type="checkbox"]:focus-visible {
+  border-color: var(--bronze-hi);
+  outline: none;
+}
+
+form input[type="checkbox"]:checked {
+  border-color: #876540;
+  background: #876540;
+}
+
+form input[type="checkbox"]:checked::before {
+  transform: translateY(-1px) rotate(-45deg) scale(1);
+}
+
+.alpago-form-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-left: 2px solid var(--error);
+  padding: 0.75rem 1rem;
+  background: color-mix(in srgb, var(--error) 7%, transparent);
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.alpago-form-notice-icon {
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid var(--error);
+  border-radius: 999px;
+  color: var(--error);
+  font-size: 11px;
+}
+
+body.light .section-bg {
+  background: radial-gradient(
+    88% 64% at 50% 0%,
+    #ebe7dd 0%,
+    #e6e2d6 26%,
+    #e0dcd1 58%,
+    #d7d2c5 82%,
+    #cfc9bb 100%
+  );
+  background-attachment: fixed;
+}
+/* root is dark by default; on the cream page match it to the same fixed gradient so
+   the 1px background-attachment:fixed seam at a pinned hand-off can't flash the dark
+   base (the "black line" between pinned acts). */
+html:has(body.light) {
+  background: radial-gradient(
+    88% 64% at 50% 0%,
+    #ebe7dd 0%,
+    #e6e2d6 26%,
+    #e0dcd1 58%,
+    #d7d2c5 82%,
+    #cfc9bb 100%
+  );
+  background-attachment: fixed;
+  background-color: #e6e2d6;
+  color-scheme: light;
+}
+/* the conviction section's SVG cover gradient (repaints the page bg over the video) */
+body.light #vbg stop:nth-of-type(1) { stop-color: #ebe7dd; }
+body.light #vbg stop:nth-of-type(2) { stop-color: #e6e2d6; }
+body.light #vbg stop:nth-of-type(3) { stop-color: #e0dcd1; }
+body.light #vbg stop:nth-of-type(4) { stop-color: #d7d2c5; }
+body.light #vbg stop:nth-of-type(5) { stop-color: #cfc9bb; }
+/* white wordmark image → espresso on cream */
+body.light img[src="/alpago-logo.svg"] {
+  filter: invert(1) brightness(0.35) sepia(0.25);
+}
+/* glass pills & badge cores flip to cream glass */
+body.light .pn-item > span:first-child {
+  background: rgba(232, 228, 217, 0.8) !important;
+  border-color: rgba(43, 36, 28, 0.16) !important;
+}
+body.light .vs-core {
+  background: rgba(232, 228, 217, 0.65) !important;
+}
+body.light ::selection {
+  background: #8a6a3e;
+  color: #e0dcd1;
+}
+
+/* light theme: while the header sits over imagery (hero / full-bleed video), the
+   logo and nav flip to light cream for legibility */
+body.light.nav-light header {
+  --ink: #ece3d5;
+  --ink-dim: rgba(236, 227, 213, 0.6);
+  --bronze: #cfa869;
+  --bronze-hi: #e2c08a;
+}
+body.light.nav-light header img[src="/alpago-logo.svg"] {
+  filter: none !important;
+}
+body.light.nav-light .bc-bar {
+  --ink: #ece3d5;
+  --ink-faint: rgba(236, 227, 213, 0.6);
+  --bronze-hi: #e2c08a;
+}
+
+/* light theme: text that sits over imagery (dark scrims) stays cream */
+body.light .over-img {
+  --ink: #ece3d5;
+  --ink-dim: rgba(236, 227, 213, 0.62);
+  --ink-strong: rgba(236, 227, 213, 0.82);
+  --ink-faint: rgba(236, 227, 213, 0.36);
+  /* over dark scrims the gold stays the light gradient */
+  --gold-1: #e8c78f;
+  --gold-2: #cca05c;
+  --gold-3: #a67c40;
+}
