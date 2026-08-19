@@ -7,9 +7,15 @@ import { clamp, smoothstep } from "./kit";
 
 const SLIDES: HeroSlide[] = [
   {
-    src: "/media/alp/about-v3-3.png",
-    background: "#e8e1d5",
-    tone: "dark",
+    src: "/media/video/alpago-performance-client.mp4",
+    video: true,
+    playbackRate: 0.6,
+    background: "#120905",
+    tone: "light",
+    fitWidth: true,
+    positionY: "top",
+    filter: "sepia(0.3) saturate(0.88) brightness(0.98) contrast(0.97)",
+    tint: "rgba(112, 67, 30, 0.42)",
     eyebrow: "Alpago is raising the ceiling",
     rows: [
       "To redefine what can be expected,",
@@ -17,13 +23,15 @@ const SLIDES: HeroSlide[] = [
     ],
   },
   {
-    src: "/media/alp/performance-client-wide.png",
-    background: "#e8dfd0",
-    tone: "dark",
+    src: "/media/video/alpago-performance-client.mp4",
+    video: true,
+    playbackRate: 0.6,
+    background: "#120905",
+    tone: "light",
     fitWidth: true,
     positionY: "top",
     filter: "sepia(0.3) saturate(0.88) brightness(0.98) contrast(0.97)",
-    tint: "rgba(118, 76, 38, 0.12)",
+    tint: "rgba(112, 67, 30, 0.42)",
     columns: [
       "When doing what is right for the client takes precedence over what is easiest for the business, outcomes are no longer measured against existing benchmarks. They become new ones. Across the Group, this principle takes different forms, from property and design & build to automotive curation, but the commitment remains the same: No compromise in quality, standards and outcome.",
     ],

@@ -9,6 +9,8 @@ import * as THREE from "three";
 export type HeroSlide = {
   src: string;
   video?: boolean;
+  /** Relative playback speed for video slides. */
+  playbackRate?: number;
   eyebrow?: string;
   rows?: string[];
   text?: string;
@@ -87,8 +89,9 @@ export default function HeroScrub({
 
   useLayoutEffect(() => {
     const sec = section.current;
+    const stg = stage.current;
     const cvs = glCanvas.current;
-    if (!sec || !cvs) return;
+    if (!sec || !stg || !cvs) return;
 
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -269,8 +272,14 @@ export default function HeroScrub({
     };
 
     const videoEls: HTMLVideoElement[] = [];
+    const videoBySrc = new Map<string, HTMLVideoElement>();
     SLIDES.forEach((s, i) => {
       if (s.video) {
+        const existingVideo = videoBySrc.get(s.src);
+        if (existingVideo) {
+          media[i] = existingVideo;
+          return;
+        }
         const vid = document.createElement("video");
         vid.src = s.src;
         vid.muted = true;
@@ -278,12 +287,14 @@ export default function HeroScrub({
         vid.playsInline = true;
         vid.autoplay = true;
         vid.preload = "auto";
+        vid.playbackRate = s.playbackRate ?? 1;
         vid.addEventListener("loadeddata", () => {
           drawInto(i);
           render();
         });
         vid.play().catch(() => {});
         media[i] = vid;
+        videoBySrc.set(s.src, vid);
         videoEls.push(vid);
         return;
       }
@@ -400,6 +411,10 @@ export default function HeroScrub({
             cvs.style.opacity = (
               introF * (variant === "performance" ? 1 - mergeF : 1)
             ).toFixed(3);
+            if (variant === "performance") {
+              const videoOpacity = introF * (1 - mergeF);
+              stg.dataset.navoff = videoOpacity > 0.2 ? "0" : "1";
+            }
             if (SLIDES.length === 2) {
               const twoSlideTransition: [number, number] = [0.18, 0.5];
               if (p < twoSlideTransition[0]) {
@@ -449,7 +464,7 @@ export default function HeroScrub({
       const io: [number | null, number | null][] = variant === "performance"
         ? SLIDES.length === 2
           ? [
-              [0.035, 0.19],
+              [0.035, 0.3],
               [0.42, 0.86],
             ]
           : [
@@ -522,7 +537,11 @@ export default function HeroScrub({
 
   return (
     <div ref={section} id={id} aria-label={ariaLabel} className="relative z-20">
-      <div ref={stage} className="relative z-20 h-screen w-full overflow-hidden">
+      <div
+        ref={stage}
+        data-navoff={variant === "performance" ? "1" : undefined}
+        className={`${variant === "performance" ? "nav-dark " : ""}relative z-20 h-screen w-full overflow-hidden`}
+      >
         {/* scroll-driven merge: the hero is masked away from the bottom up, revealing
             the section behind it — directional, and never covers the next section */}
         <div ref={fade} className="absolute inset-0">
@@ -577,7 +596,9 @@ export default function HeroScrub({
                   <span
                     className="hero-row hero-char caption mb-7 block"
                     style={{
-                      color: s.tone === "dark" ? "var(--bronze-hi)" : undefined,
+                      color: variant === "performance" && s.tone !== "dark"
+                        ? "#f5eee4"
+                        : s.tone === "dark" ? "var(--bronze-hi)" : undefined,
                       letterSpacing: "0.16em",
                     }}
                   >
@@ -654,7 +675,12 @@ export default function HeroScrub({
                         style={{
                           display: "inline-block",
                           whiteSpace: "pre",
-                          ...(s.tone === "dark"
+                          ...(variant === "performance" && s.tone !== "dark"
+                            ? {
+                                color: "#f5eee4",
+                                WebkitTextFillColor: "#f5eee4",
+                              }
+                            : s.tone === "dark"
                             ? { color: "var(--bronze-hi)" }
                             : {
                                 backgroundImage:

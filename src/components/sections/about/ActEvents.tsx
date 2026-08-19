@@ -54,7 +54,7 @@ function Panel({
 }) {
   return (
     <div
-      className="over-img group relative h-[82vh] flex-1 overflow-hidden"
+      className="standalone-world-card over-img group relative h-[82vh] flex-1 overflow-hidden"
       style={
         divider
           ? { borderLeft: "1px solid rgba(236,227,213,0.5)" }
@@ -171,7 +171,7 @@ export default function ActEvents({
     <section
       ref={section}
       id="events"
-      className={`relative w-full overflow-hidden pt-[9vh] ${compactEnding ? "pb-[14vh]" : "pb-[40vh]"}`}
+      className={`relative z-20 w-full overflow-hidden pt-[9vh] ${compactEnding ? "pb-[14vh]" : "pb-[40vh]"}`}
       style={{ background: transparentBackground ? "transparent" : "#e0dcd1" }}
     >
       <div ref={composition} data-events-composition>
@@ -197,11 +197,10 @@ export default function ActEvents({
           <Reveal delay={0.12}>
             <button
               type="button"
-              disabled
+              aria-disabled="true"
               aria-label="Explore All is unavailable in this standalone presentation"
-              className="caption mt-8 inline-block cursor-default px-9 py-4 transition-opacity hover:opacity-80"
+              className="alpago-dark-button caption ease-alpago mt-8 inline-block cursor-default px-9 py-4 transition-[background-color,color,box-shadow,transform] duration-500 hover:-translate-y-0.5"
               style={{
-                background: "#2a221c",
                 color: "#efe7d8",
                 letterSpacing: "0.14em",
               }}
